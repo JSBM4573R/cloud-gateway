@@ -6,25 +6,25 @@ spring:
     name: API-GATEWAY
   cloud:
     gateway:
-      routers:
+      routes:
         - id: USER-SERVICE
           uri: lb://USER-SERVICE
           predicates:
             - Path=/users/**
           filters:
             - name: CircuitBreaker
-              arg:
+              args:
                 name: USER-SERVICE
-                fallbackurl: forward:/userServiceFallBack
+                fallbackuri: forward:/userServiceFallBack
         - id: DEPARTMENT-SERVICE
           uri: lb://DEPARTMENT-SERVICE
           predicates:
             - Path=/departments/**
           filters:
             - name: CircuitBreaker
-              arg:
+              args:
                 name: DEPARTMENT-SERVICE
-                fallbackurl: forward:/departmentServiceFallBack
+                fallbackuri: forward:/departmentServiceFallBack
 
 hystrix:
   command:
@@ -38,7 +38,9 @@ management:
   endpoints:
     web:
       exposure:
-        include: hystrix.stream
+        include: "prometheus"
+    health:
+      show-details: always
 
 eureka:
   client:
